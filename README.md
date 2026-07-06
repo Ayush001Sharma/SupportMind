@@ -1,24 +1,24 @@
 # SupportMind
 
-This is a take-home assignment implementing an end-to-end Retrieval-Augmented Generation (RAG) system. The project provides an AI assistant that can answer questions based on documents uploaded by the user.
+SupportMind is a Retrieval-Augmented Generation (RAG) application that allows users to upload their own documents and ask questions about them through a Chat UI. The project runs completely on a local Ollama setup, so no external AI APIs or paid services are required.
 
-All inference runs locally using Ollama. There are no paid API dependencies.
+All inference runs locally using Ollama. The application uses Ollama for both embeddings and text generation, allowing everything to run locally.
 
 ## Features
 
-- **Document Upload:** Supports uploading PDF, DOCX, and TXT files.
-- **Local RAG:** Uses local embeddings and a local LLM for inference.
-- **Chat Interface:** A React-based frontend to interact with the assistant and see citations.
+- **Upload Documents:** Supports uploading PDF, DOCX, and TXT files.
+- **Local AI Inference:** Uses local embeddings and a local LLM for inference.
+- **Chat UI:** A React-based frontend to interact with the assistant and see citations.
 - **Session Memory:** Retains conversation context per session.
 - **Context Sanitization:** Filters common prompt injection phrases from retrieved chunks.
 
 ## Project Architecture
 
-The backend is structured to separate concerns. This keeps the code modular and makes it easier to test or swap out providers.
+I tried to keep the backend modular by separating document processing, retrieval, generation, and API logic into different services. This made the project easier to test and modify while building it.. This keeps the code modular and makes it easier to test or swap out providers.
 
 The flow works like this:
-1. **Document Upload:** The API receives the file and hands it off to a document service to validate and save it.
-2. **Processing:** Text is extracted from the raw file formats and cleaned up (e.g. normalizing whitespace).
+1. **Upload Documents:** The API receives the file and hands it off to a document service to validate and save it.
+2. **Processing:** After a document is uploaded, the text is extracted, cleaned, split into chunks, embedded using Ollama, and stored in ChromaDB. When a user asks a question, the backend retrieves the most relevant chunks and sends them to the language model along with the conversation history to generate a grounded answer.
 3. **Chunking:** The cleaned text is split into smaller, semantic chunks so that they fit into the LLM context window.
 4. **Vector Storage:** Chunks are embedded and stored in ChromaDB.
 5. **Retrieval:** When a user asks a question, the retrieval service pulls the most relevant chunks from ChromaDB and filters them by a similarity threshold.
@@ -78,7 +78,7 @@ ollama pull llama3.2:3b
 ```
 
 ### 3. Backend
-Navigate to the `backend` directory, set up a virtual environment, and install dependencies:
+From the project root:
 ```bash
 cd backend
 python3 -m venv .venv
@@ -142,10 +142,10 @@ All tests are currently passing.
 
 ## Design Decisions
 
-- **Local Inference:** I migrated the stack from OpenAI to Ollama. This ensures the project can be run entirely offline without needing paid API keys.
-- **Separation of Concerns:** Retrieval logic is separated from RAG generation logic. This makes it easier to test them in isolation and prevents the RAG service from being tightly coupled to ChromaDB.
-- **Thin Routers:** FastAPI route handlers do almost nothing except receive the request and pass it to a service layer. This keeps the HTTP logic decoupled from business logic.
-- **In-Memory History:** Chat history is maintained in memory per session ID. This was chosen for simplicity during the assignment, but it is abstracted behind a service so it can be swapped for a database later.
+- **Local Inference:** Why Ollama? I initially built the project using OpenAI APIs, but later switched to Ollama so the application could run completely offline without requiring API keys or paid services.
+- **Separation of Concerns:** I kept retrieval and answer generation as separate services because they solve different problems. It also made testing easier and means I could replace the vector database later without changing the generation logic.
+- **Thin API Layer:** FastAPI route handlers do almost nothing except receive the request and pass it to a service layer. This keeps the HTTP logic decoupled from business logic.
+- **In-Memory History:** Chat history is maintained in memory per session ID. I chose this approach to keep the implementation simple, while keeping the service abstract enough to be replaced with a database later.
 
 ## Known Limitations
 
