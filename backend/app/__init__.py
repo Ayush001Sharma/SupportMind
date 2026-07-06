@@ -1,0 +1,1 @@
+# SupportMind Backend Application

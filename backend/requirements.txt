@@ -1,0 +1,32 @@
+# ------------------------------------------------------------------ #
+# Core framework
+# ------------------------------------------------------------------ #
+fastapi==0.115.6
+uvicorn[standard]==0.32.1          # includes websockets + httptools for speed
+pydantic==2.10.3
+pydantic-settings==2.7.0           # .env loading with full type validation
+python-multipart==0.0.20           # required for FastAPI UploadFile support
+
+# ------------------------------------------------------------------ #
+# AI / LLM
+# ------------------------------------------------------------------ #
+langchain==0.3.14
+langchain-ollama==0.2.3            # Official Ollama integration
+langchain-community==0.3.14        # ChromaDB vector store integration
+tiktoken==0.8.0                    # token-aware text splitting
+
+# ------------------------------------------------------------------ #
+# Vector database
+# ------------------------------------------------------------------ #
+chromadb==0.6.3
+
+# ------------------------------------------------------------------ #
+# Document parsing
+# ------------------------------------------------------------------ #
+pypdf==5.1.0                       # PDF text extraction
+docx2txt==0.8                      # DOCX text extraction
+
+# ------------------------------------------------------------------ #
+# Utilities
+# ------------------------------------------------------------------ #
+python-dotenv==1.0.1               # fallback .env loader (pydantic-settings uses this)
