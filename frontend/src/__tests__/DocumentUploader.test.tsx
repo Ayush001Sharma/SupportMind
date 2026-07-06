@@ -2,7 +2,7 @@
  * DocumentUploader.test.tsx — Tests for the file upload component.
  */
 
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DocumentUploader } from '../components/document/DocumentUploader';
